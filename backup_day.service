@@ -1,0 +1,9 @@
+[Unit]
+Description=Daemon systemd for backup server Minecraft
+
+[Service]
+Type=oneshot
+ExecStart=sh /etc/systemd/system/files/backup.sh
+
+[Install]
+WantedBy=multi-user.target
