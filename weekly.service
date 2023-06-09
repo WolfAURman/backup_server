@@ -1,0 +1,9 @@
+[Unit]
+Description=Daemon systemd for backup weekly server Minecraft
+
+[Service]
+Type=oneshot
+ExecStart=echo "week" > /tmp/week
+
+[Install]
+WantedBy=multi-user.target

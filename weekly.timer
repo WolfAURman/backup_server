@@ -1,0 +1,8 @@
+[Unit]
+Description=Daemon timer systemd for backup weekly server Minecraft timer
+
+[Timer]
+OnCalendar=Mon *-*-* 2:55:00
+
+[Install]
+WantedBy=timers.target
