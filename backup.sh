@@ -11,24 +11,21 @@
 #
 
 DATE=$(date "+%d-%m-%Y.%T") # Не изменять ни в коем случае! Создаёт датацию всех наших будущих файлов, папок и архивов
-#
 USR=root # Заменить на необходимого пользователя
 FOLDER=/$USR/Folia/main # Данную переменную вы заменяете на тот путь, который принадлежит рабочей папке сервера, где хранятся папки plugins, world и.т.д
-TYPE=docker # На выбор: docker, podman, screen, tmux. В docker и podman используется tmux
+TYPE=docker # На выбор: docker, podman, screen, tmux. В docker и podman в к-ве виртуального терминала используется tmux
 CTNAME=folia # Название/id контейнера. При условии если вы используете docker/podman. Если нет - игнорируйте
 SNAME=main # Название сессии, замените на своё название сессии виртуального терминала!
 
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
     # Отправляет команду stop в необходимую сессию, нужному контейнеру
-	"docker"         ) docker exec -it $CTNAME tmux send -t $SNAME.0 'bc stop' ENTER ;;
-    "podman"         ) podman exec -it $CTNAME tmux send -t $SNAME.0 'bc stop' ENTER ;;
-    # Отправляет команду stop в необходимую сессию. Заменить $SNAME на название сессии
+    "docker" ) docker exec -it $CTNAME tmux send -t $SNAME.0 'bc stop' ENTER ;;
+    "podman" ) podman exec -it $CTNAME tmux send -t $SNAME.0 'bc stop' ENTER ;;
     # `echo -ne '\015'` позволяет эмитировать нажатие кнопки ввод
-	"screen"         ) screen -S $SNAME -p 0 -X screen "stop"`echo -ne '\015'`             ;;
-    # Отправляет команду stop в необходимую сессию. Заменить $SNAME на название сессии
+    "screen" ) screen -S $SNAME -p 0 -X screen "stop"`echo -ne '\015'`       ;;
     # ENTER позволяет эмитировать нажатие кнопки ввод
-	"tmux"           ) tmux send -t $SNAME.0 'bc stop' ENTER                               ;;
+    "tmux"   ) tmux send -t $SNAME.0 'bc stop' ENTER                         ;;
 
 	esac
 
@@ -39,12 +36,12 @@ sleep 5
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
     # Отправляет эмуляцию CTRL + C  в необходимую сессию, нужному контейнеру
-	"docker"         ) docker exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
-    "podman"         ) podman exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
+    "docker" ) docker exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
+    "podman" ) podman exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
     # Отправляет эмуляцию CTRL + C в необходимую сессию.
-	"screen"         ) screen -S $SNAME -p 0 -X stuff "^C"                          ;;
+    "screen" ) screen -S $SNAME -p 0 -X stuff "^C"                    ;;
     # Отправляет эмуляцию CTRL + C в необходимую сессию. ENTER позволяет эмитировать нажатие кнопки ввод
-	"tmux"           ) tmux send-keys -t $SNAME.0 C-c                               ;;
+    "tmux"   ) tmux send-keys -t $SNAME.0 C-c                         ;;
 
 	esac
 
@@ -87,13 +84,13 @@ mysqldump -u root --all-databases > /$USR/backup/backup_$DATE/all-databases_$DAT
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
     # Отправляет команду stop в необходимую сессию, нужному контейнеру
-	"docker"         ) docker exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
-    "podman"         ) podman exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
+    "docker" ) docker exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
+    "podman" ) podman exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
     # Отправляет команду stop в необходимую сессию. # start.sh заменить на название скрипта запуска.
     # `echo -ne '\015'` позволяет эмитировать нажатие кнопки ввод
-	"screen"         ) screen -S $SNAME -p 0 -X screen "sh start.sh"`echo -ne '\015'`          ;;
+    "screen" ) screen -S $SNAME -p 0 -X screen "sh start.sh"`echo -ne '\015'`    ;;
     # Отправляет команду stop в необходимую сессию. ENTER позволяет эмитировать нажатие кнопки ввод
-	"tmux"           ) tmux send -t $SNAME.0 'sh start.sh' ENTER                               ;;
+    "tmux"   ) tmux send -t $SNAME.0 'sh start.sh' ENTER                         ;;
 
 	esac
 
