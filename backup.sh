@@ -18,6 +18,7 @@ FOLDER=/$USR/Folia/main # Данную переменную вы заменяе�
 TYPE=docker # На выбор: docker, podman, screen, tmux. В docker и podman в к-ве виртуального терминала используется tmux
 CTNAME=folia # Название/id контейнера. При условии если вы используете docker/podman. Если нет - игнорируйте
 SNAME=main # Название сессии, замените на своё название сессии виртуального терминала!
+HASH=sha256 # Тип хэш суммы файла. На выбор: sha256 или md5
 
 ### Раздел с настройками sftp и дальнейшей отправки бекапов ###
 SENDING=no # Активна ли передача бекапов на другой сервер при помощи sftp
@@ -110,8 +111,36 @@ cd /$USR/backup && tar -czf /$USR/backup/backup_$DATE.tar.gz backup_$DATE
 # Удаление папки с мусором (Мы уже сделали архив, папка с данными просто будет занимать место в пустую)
 rm -rf /$USR/backup/backup_$DATE
 
+# Создание хэш суммы файла в md5
+if [$HASH = md5]
+  
+  then
+    md5sum /$USR/backup/backup_$DATE.tar.gz > /$USR/backup/backup_$DATE.md5
+
+fi
+
+# Создание хэш суммы файла в sha256
+if [$HASH = sha256]
+
+  then
+    sha256sum /$USR/backup/backup_$DATE.tar.gz > /$USR/backup/backup_$DATE.sha256
+
+fi
+
 # Отправка бекапов на удалённую машину по sftp
 if [$SENDING = yes]
-then
-curl --insecure --user $LOGIN:$PASS -T /$USR/backup/backup_$DATE.tar.gz sftp://$IP:$PORT/$OUT
+  
+  then
+    if [$HASH = md5]
+      
+      then
+        curl --insecure --user $LOGIN:$PASS -T /$USR/backup/backup_$DATE.tar.gz $USR/backup/backup_$DATE.md5 sftp://$IP:$PORT/$OUT
+    fi
+
+      if [$HASH = sha256]
+
+        then
+          curl --insecure --user $LOGIN:$PASS -T /$USR/backup/backup_$DATE.tar.gz $USR/backup/backup_$DATE.sha256 sftp://$IP:$PORT/$OUT
+
+      fi
 fi
