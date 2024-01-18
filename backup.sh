@@ -31,12 +31,12 @@ OUT=/root/ # Указываете путь другой машины. Туда, 
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
     # Отправляет команду stop в необходимую сессию, нужному контейнеру
-    "docker" ) docker exec -it $CTNAME tmux send -t $SNAME.0 'stop' ENTER ;;
-    "podman" ) podman exec -it $CTNAME tmux send -t $SNAME.0 'stop' ENTER ;;
+    "docker" ) docker stop $CTNAME ;;
+    "podman" ) podman stop $CTNAME ;;
     # `echo -ne '\015'` позволяет эмитировать нажатие кнопки ввод
-    "screen" ) screen -S $SNAME -p 0 -X screen "stop"`echo -ne '\015'`       ;;
+    "screen" ) screen -S $SNAME -p 0 -X screen "stop"`echo -ne '\015'` ;;
     # ENTER позволяет эмитировать нажатие кнопки ввод
-    "tmux"   ) tmux send -t $SNAME.0 'bc stop' ENTER                         ;;
+    "tmux"   ) tmux send -t $SNAME.0 'bc stop' ENTER                   ;;
 
 	esac
 
@@ -46,13 +46,10 @@ sleep 5
 
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
-    # Отправляет эмуляцию CTRL + C  в необходимую сессию, нужному контейнеру
-    "docker" ) docker exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
-    "podman" ) podman exec -it $CTNAME tmux send-keys -t $SNAME.0 C-c ;;
     # Отправляет эмуляцию CTRL + C в необходимую сессию.
-    "screen" ) screen -S $SNAME -p 0 -X stuff "^C"                    ;;
+    "screen" ) screen -S $SNAME -p 0 -X stuff "^C" ;;
     # Отправляет эмуляцию CTRL + C в необходимую сессию. ENTER позволяет эмитировать нажатие кнопки ввод
-    "tmux"   ) tmux send-keys -t $SNAME.0 C-c                         ;;
+    "tmux"   ) tmux send-keys -t $SNAME.0 C-c      ;;
 
 	esac
 
@@ -95,13 +92,13 @@ mysqldump -u root --all-databases > /$USR/backup/backup_$DATE/all-databases_$DAT
 # Здесь происходит выбор исходя из переменной $TYPE
   case "${TYPE,,}" in 
     # Отправляет команду stop в необходимую сессию, нужному контейнеру
-    "docker" ) docker exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
-    "podman" ) podman exec -it $CTNAME tmux send -t $SNAME.0 'sh start.sh' ENTER ;;
+    "docker" ) docker start $CTNAME ;;
+    "podman" ) podman start $CTNAME ;;
     # Отправляет команду stop в необходимую сессию. # start.sh заменить на название скрипта запуска.
     # `echo -ne '\015'` позволяет эмитировать нажатие кнопки ввод
-    "screen" ) screen -S $SNAME -p 0 -X screen "sh start.sh"`echo -ne '\015'`    ;;
+    "screen" ) screen -S $SNAME -p 0 -X screen "sh start.sh"`echo -ne '\015'` ;;
     # Отправляет команду stop в необходимую сессию. ENTER позволяет эмитировать нажатие кнопки ввод
-    "tmux"   ) tmux send -t $SNAME.0 'sh start.sh' ENTER                         ;;
+    "tmux"   ) tmux send -t $SNAME.0 'sh start.sh' ENTER                      ;;
 
 	esac
 
